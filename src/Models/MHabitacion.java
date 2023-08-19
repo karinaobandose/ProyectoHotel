@@ -12,20 +12,20 @@ public class MHabitacion {
     private Integer Numero;
     private Integer Tipo; //1-Individual, 2-Doble, 3-Suite
     private boolean Estado; //true-Ocupado, false-Libre
-    private Integer Precio;
+    private Double Precio;
 
-    public MHabitacion(Integer Numero, Integer Tipo, boolean Estado) {
+    public MHabitacion(Integer Numero, Integer Tipo) {
         this.Numero = Numero;
         this.Tipo = Tipo;
-        this.Estado = Estado;
+        this.Estado = false;
         SaberPrecio(Tipo);
     }
     
     public void SaberPrecio(Integer Tipo){
         switch(Tipo){
-            case 1 ->{this.Precio=45000;}
-            case 2 ->{this.Precio=80000;}
-            case 3 ->{this.Precio=140000;}
+            case 1 ->{this.Precio=45000.0;}
+            case 2 ->{this.Precio=80000.0;}
+            case 3 ->{this.Precio=140000.0;}
         }
     }
 
@@ -53,12 +53,17 @@ public class MHabitacion {
         this.Estado = Estado;
     }
 
-    public Integer getPrecio() {
+    public double getPrecio() {
         return Precio;
     }
 
-    public void setPrecio(Integer Precio) {
+    public void setPrecio(double Precio) {
         this.Precio = Precio;
+    }
+
+    @Override
+    public String toString() {
+        return "MHabitacion{" + "Numero=" + Numero + ", Tipo=" + Tipo + ", Estado=" + Estado + ", Precio=" + Precio + '}';
     }
     
     

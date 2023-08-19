@@ -14,7 +14,7 @@ public class MServicio {
     private String Descripcion;
     private Double Precio;
 
-    public MServicio(int Codigo, String Nombre, String Descripcion, Double Precio) {
+    public MServicio(int Codigo, String Nombre, String Descripcion, double Precio) {
         this.Codigo = Codigo;
         this.Nombre = Nombre;
         this.Descripcion = Descripcion;
@@ -51,6 +51,11 @@ public class MServicio {
 
     public void setPrecio(Double Precio) {
         this.Precio = Precio;
+    }
+
+    @Override
+    public String toString() {
+        return "MServicio{" + "Codigo=" + Codigo + ", Nombre=" + Nombre + ", Descripcion=" + Descripcion + ", Precio=" + Precio + '}';
     }
     
     

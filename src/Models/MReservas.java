@@ -23,13 +23,99 @@ public class MReservas {
     private Double Impuestos;
     private Double Total;
 
+    public MReservas(Integer NumeroReserva, MCliente Cliente, MHabitacion Habitacion, LocalDate FechaEntrada, LocalDate FechaSalida, Integer Estado) {
+        this.NumeroReserva = NumeroReserva;
+        this.Cliente = Cliente;
+        this.Habitacion = Habitacion;
+        this.FechaEntrada = FechaEntrada;
+        this.FechaSalida = FechaSalida;
+        this.Estado = 1;
+        CalcularPrecio(this.FechaEntrada,this.FechaSalida);
+    }
     
     
-    public void Calcular(LocalDate FechaEntrada, LocalDate FechaSalida) {
+    public void CalcularPrecio(LocalDate FechaEntrada, LocalDate FechaSalida) {
         Period period = Period.between(FechaEntrada, FechaSalida);
         
-        this.Subtotal = (this.Total / (1+0.13))
+        double Precio = Habitacion.getPrecio();
         
+        this.Subtotal = (Precio / (1+0.13)) * period.getDays();
+        this.Impuestos = this.Subtotal * 0.13;
+        this.Total = this.Subtotal + this.Impuestos;
     }
+
+    public Integer getNumeroReserva() {
+        return NumeroReserva;
+    }
+
+    public void setNumeroReserva(Integer NumeroReserva) {
+        this.NumeroReserva = NumeroReserva;
+    }
+
+    public MCliente getCliente() {
+        return Cliente;
+    }
+
+    public void setCliente(MCliente Cliente) {
+        this.Cliente = Cliente;
+    }
+
+    public MHabitacion getHabitacion() {
+        return Habitacion;
+    }
+
+    public void setHabitacion(MHabitacion Habitacion) {
+        this.Habitacion = Habitacion;
+    }
+
+    public LocalDate getFechaEntrada() {
+        return FechaEntrada;
+    }
+
+    public void setFechaEntrada(LocalDate FechaEntrada) {
+        this.FechaEntrada = FechaEntrada;
+    }
+
+    public LocalDate getFechaSalida() {
+        return FechaSalida;
+    }
+
+    public void setFechaSalida(LocalDate FechaSalida) {
+        this.FechaSalida = FechaSalida;
+    }
+
+    public Integer getEstado() {
+        return Estado;
+    }
+
+    public void setEstado(Integer Estado) {
+        this.Estado = Estado;
+    }
+
+    public Double getSubtotal() {
+        return Subtotal;
+    }
+
+    public void setSubtotal(Double Subtotal) {
+        this.Subtotal = Subtotal;
+    }
+
+    public Double getImpuestos() {
+        return Impuestos;
+    }
+
+    public void setImpuestos(Double Impuestos) {
+        this.Impuestos = Impuestos;
+    }
+
+    public Double getTotal() {
+        return Total;
+    }
+
+    public void setTotal(Double Total) {
+        this.Total = Total;
+    }
+    
+    
     
 }

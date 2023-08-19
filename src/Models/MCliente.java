@@ -71,6 +71,11 @@ public class MCliente {
     public void setCorreo(String Correo) {
         this.Correo = Correo;
     }
+
+    @Override
+    public String toString() {
+        return "MCliente{" + "Cedula=" + Cedula + ", Nombre=" + Nombre + ", FechaNacimiento=" + FechaNacimiento + ", Telefono=" + Telefono + ", Correo=" + Correo + '}';
+    }
     
     
 }
