@@ -4,19 +4,120 @@
  */
 package Views.Empleado;
 
+import Controllers.CEmpleado;
+import Controllers.Controlador;
+import Models.MEmpleado;
+import Models.Utils;
+import Views.Vista;
 import java.awt.event.KeyEvent;
 
 /**
  *
  * @author emalo
  */
-public class FrmEmpleados extends javax.swing.JFrame {
+public class FrmEmpleados extends javax.swing.JFrame implements Vista {
+
+    private Utils utiles;
+    private Controlador<MEmpleado> controlador;
+
+    @Override
+    public void setControlador(Controlador controlador) {
+        this.controlador = (CEmpleado) controlador;
+        System.out.println(this.controlador);
+    }
+
+    public void ValidarCancelar() {
+        if (this.controlador.getObjecto() == null) {
+            this.btnEliminar.setEnabled(false);
+//            this.TxtNumero.setEditable(true);
+            this.TxtCedula.setEditable(true);
+        }
+    }
+
+    public void Limpiar() {
+        this.btnEliminar.setEnabled(false);
+        this.TxtCedula.setEditable(true);
+
+        this.TxtCedula.setText("");
+        this.TxtNombre.setText("");
+        this.TxtSalario.setText("");
+        this.TxtTelefono.setText("");
+        this.DescarmarChecks();
+    }
+
+    @Override
+    public void showData() {
+        this.VerificarCheck();
+        this.TxtCedula.setText(String.valueOf(this.controlador.getObjecto().getCedula()));
+        this.TxtNombre.setText(String.valueOf(this.controlador.getObjecto().getNombre()));
+        this.TxtSalario.setText(String.valueOf(this.controlador.getObjecto().getSalario()));
+        this.TxtTelefono.setText(String.valueOf(this.controlador.getObjecto().getTelefono()));
+    }
+
+    public void VerificarCheck() {
+        this.DescarmarChecks();
+        switch (this.controlador.getObjecto().getPuesto()) {
+            case 1 -> {
+                this.CkRecepcionista.setSelected(true);
+            }
+            case 2 -> {
+                this.CkGerente.setSelected(true);
+            }
+            case 3 -> {
+                this.CkConserje.setSelected(true);
+            }
+            case 4 -> {
+                this.CkSupervisor.setSelected(true);
+            }
+            case 5 -> {
+                this.CkMantenimiento.setSelected(true);
+            }
+        }
+    }
+
+    public int SaberPuesto() {
+        int Eleccion = 0;
+        if (this.CkRecepcionista.isSelected()) {
+            Eleccion = 1;
+        } else if (this.CkGerente.isSelected()) {
+            Eleccion = 2;
+        } else if (this.CkConserje.isSelected()) {
+            Eleccion = 3;
+        } else if (this.CkSupervisor.isSelected()) {
+            Eleccion = 4;
+        } else if (this.CkMantenimiento.isSelected()) {
+            Eleccion = 5;
+        }
+
+        return Eleccion;
+    }
+
+    public MEmpleado CrearEmpleado() {
+
+        try {
+            Integer Cedula = Integer.valueOf(this.TxtCedula.getText());
+            String Nombre = this.TxtNombre.getText();
+            String Telefono = this.TxtTelefono.getText();
+            Integer Puesto = this.SaberPuesto(); //1-Recepcionista, 2-Gerente, 3-Conserje, 4-Supervisor, 5-Mantenimiento
+            double Salario = Double.valueOf(this.TxtSalario.getText());
+
+            return new MEmpleado(Cedula, Nombre, Telefono, Puesto, Salario);
+        } catch (Exception e) {
+            return null;
+        }
+
+    }
 
     /**
      * Creates new form Empleados
      */
     public FrmEmpleados() {
         initComponents();
+        this.setControlador(new CEmpleado());
+        utiles = new Utils();
+        this.btnEliminar.setEnabled(false);
+
+        this.TxtSalario.setEditable(false);
     }
 
     /**
@@ -29,20 +130,21 @@ public class FrmEmpleados extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel3 = new javax.swing.JPanel();
-        TxtTipo = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
-        TxtCedula = new javax.swing.JTextField();
-        LblNumero = new javax.swing.JLabel();
-        LblPrecio = new javax.swing.JLabel();
-        TxtFecha = new javax.swing.JTextField();
-        TxtCorreo = new javax.swing.JTextField();
-        Txt = new javax.swing.JTextField();
+        TxtSalario = new javax.swing.JTextField();
+        TxtTelefono = new javax.swing.JTextField();
         TxtNombre = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        LbEdad = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        CkRecepcionista = new javax.swing.JCheckBox();
+        CkGerente = new javax.swing.JCheckBox();
+        CkConserje = new javax.swing.JCheckBox();
+        CkSupervisor = new javax.swing.JCheckBox();
+        CkMantenimiento = new javax.swing.JCheckBox();
+        TxtCedula = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         btnGuardar = new javax.swing.JButton();
         btnNuevo = new javax.swing.JButton();
@@ -55,27 +157,79 @@ public class FrmEmpleados extends javax.swing.JFrame {
         jPanel3.setBackground(new java.awt.Color(255, 255, 204));
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        TxtTipo.setText("jTextField2");
-
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(241, 241, 241)
-                .addComponent(TxtTipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(19, Short.MAX_VALUE)
-                .addComponent(TxtTipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+            .addGap(0, 47, Short.MAX_VALUE)
         );
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 204));
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        TxtSalario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TxtSalarioActionPerformed(evt);
+            }
+        });
+
+        TxtNombre.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TxtNombreActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setText("Telefono");
+
+        jLabel3.setText("Nombre");
+
+        jLabel5.setText("Salario");
+
+        jLabel4.setText("Puestos");
+
+        CkRecepcionista.setText("Recepcionista");
+        CkRecepcionista.setMargin(new java.awt.Insets(12, 12, 12, 12));
+        CkRecepcionista.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CkRecepcionistaActionPerformed(evt);
+            }
+        });
+
+        CkGerente.setText("Gerente");
+        CkGerente.setMargin(new java.awt.Insets(12, 12, 12, 12));
+        CkGerente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CkGerenteActionPerformed(evt);
+            }
+        });
+
+        CkConserje.setText("Conserje");
+        CkConserje.setMargin(new java.awt.Insets(12, 12, 12, 12));
+        CkConserje.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CkConserjeActionPerformed(evt);
+            }
+        });
+
+        CkSupervisor.setText("Supervisor");
+        CkSupervisor.setMargin(new java.awt.Insets(12, 12, 12, 12));
+        CkSupervisor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CkSupervisorActionPerformed(evt);
+            }
+        });
+
+        CkMantenimiento.setText("Mantenimiento");
+        CkMantenimiento.setMargin(new java.awt.Insets(12, 12, 12, 12));
+        CkMantenimiento.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CkMantenimientoActionPerformed(evt);
+            }
+        });
 
         TxtCedula.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -88,110 +242,75 @@ public class FrmEmpleados extends javax.swing.JFrame {
             }
         });
 
-        LblNumero.setText("Numero de Cedula");
-
-        LblPrecio.setText("Fecha Nacimiento");
-
-        TxtFecha.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                TxtFechaActionPerformed(evt);
-            }
-        });
-
-        TxtCorreo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                TxtCorreoActionPerformed(evt);
-            }
-        });
-
-        TxtNombre.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                TxtNombreActionPerformed(evt);
-            }
-        });
-
-        jLabel1.setText("Edad");
-
-        jLabel2.setText("Telefono");
-
-        jLabel3.setText("Nombre");
-
-        LbEdad.setText("0");
-
-        jLabel5.setText("Correo");
+        jLabel6.setText("Cedula");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGap(52, 52, 52)
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel3)
+                .addGap(106, 106, 106)
+                .addComponent(jLabel2)
+                .addGap(94, 94, 94)
+                .addComponent(jLabel5)
+                .addGap(60, 60, 60))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(323, 323, 323)
+                .addComponent(jLabel4)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(27, 27, 27)
-                        .addComponent(TxtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(38, 38, 38)
-                        .addComponent(Txt, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(TxtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(CkRecepcionista, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(CkGerente)
+                        .addGap(18, 18, 18)
+                        .addComponent(CkConserje)
+                        .addGap(18, 18, 18)
+                        .addComponent(CkSupervisor)
+                        .addGap(18, 18, 18)
+                        .addComponent(CkMantenimiento)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(67, 67, 67)
-                                .addComponent(TxtCedula, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(47, 47, 47)
-                                .addComponent(jLabel3)
-                                .addGap(138, 138, 138)
-                                .addComponent(jLabel2)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(TxtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(LbEdad, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addGap(97, 97, 97))))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(86, 86, 86)
-                        .addComponent(LblNumero)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(LblPrecio)
-                        .addGap(70, 70, 70)
-                        .addComponent(jLabel1)
-                        .addGap(28, 28, 28)))
-                .addGap(39, 39, 39))
+                        .addComponent(TxtCedula, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(TxtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(TxtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(29, 29, 29)
+                        .addComponent(TxtSalario)
+                        .addGap(25, 25, 25))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addComponent(LblNumero, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(6, 6, 6))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addGap(23, 23, 23)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(LblPrecio))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(TxtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(LbEdad, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(TxtCedula, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(40, 40, 40)
+                .addGap(11, 11, 11)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(jLabel2)
-                    .addComponent(jLabel5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 61, Short.MAX_VALUE)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel6))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(Txt, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(TxtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(TxtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(61, Short.MAX_VALUE))
+                    .addComponent(TxtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TxtSalario, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TxtCedula, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(CkRecepcionista, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(CkGerente, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(CkConserje, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(CkSupervisor, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(CkMantenimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 204));
@@ -273,7 +392,7 @@ public class FrmEmpleados extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 620, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
@@ -290,9 +409,130 @@ public class FrmEmpleados extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void TxtSalarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TxtSalarioActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TxtSalarioActionPerformed
+
+    private void TxtNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TxtNombreActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TxtNombreActionPerformed
+
+    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
+
+        if (!this.TxtCedula.getText().isEmpty() && !this.TxtNombre.getText().isEmpty()
+                && !this.TxtSalario.getText().isEmpty() && !this.TxtTelefono.getText().isEmpty()) {
+            MEmpleado Temp = CrearEmpleado();
+            try {
+                if (this.btnEliminar.isEnabled()) {
+
+                    this.controlador.Actualizar(Temp);
+                } else {
+                    if (this.controlador.Buscar(Temp.getCedula()) == null) {
+
+                        this.controlador.Crear(Temp);
+                        System.out.println(this.controlador.getLista());
+                    } else {
+                        System.out.println("Ya existe");
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+
+        }
+    }//GEN-LAST:event_btnGuardarActionPerformed
+
+    private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
+        //        this.clear();
+        Limpiar();
+    }//GEN-LAST:event_btnNuevoActionPerformed
+
+    private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_btnSalirActionPerformed
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+
+        FrmEmpleadosBuscar frm = new FrmEmpleadosBuscar(null, true);
+        frm.setControlador(controlador);
+        frm.setVisible(true);
+
+        this.TxtCedula.setEditable(false);
+        this.btnEliminar.setEnabled(true);
+
+        ValidarCancelar();
+
+        try {
+            showData();
+        } catch (Exception e) {
+            System.out.println("error 2");
+        }
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        // TODO add your handling code here:
+        MEmpleado Temp = CrearEmpleado();
+        try {
+            this.controlador.Eliminar(Temp);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
     private void TxtCedulaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TxtCedulaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_TxtCedulaActionPerformed
+
+    private void CkRecepcionistaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CkRecepcionistaActionPerformed
+        // TODO add your handling code here:
+        DescarmarChecks();
+
+        if (!this.btnEliminar.isEnabled()) {
+
+            this.TxtSalario.setText("800000");
+        }
+        this.CkRecepcionista.setSelected(true);
+    }//GEN-LAST:event_CkRecepcionistaActionPerformed
+
+    private void CkGerenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CkGerenteActionPerformed
+        // TODO add your handling code here:
+        DescarmarChecks();
+        if (!this.btnEliminar.isEnabled()) {
+            this.TxtSalario.setText("1400000");
+        }
+        this.CkGerente.setSelected(true);
+
+    }//GEN-LAST:event_CkGerenteActionPerformed
+
+    private void CkSupervisorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CkSupervisorActionPerformed
+        // TODO add your handling code here:
+        DescarmarChecks();
+        if (!this.btnEliminar.isEnabled()) {
+
+            this.TxtSalario.setText("1100000");
+        }
+        this.CkSupervisor.setSelected(true);
+    }//GEN-LAST:event_CkSupervisorActionPerformed
+
+    private void CkConserjeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CkConserjeActionPerformed
+        // TODO add your handling code here:
+        DescarmarChecks();
+        if (!this.btnEliminar.isEnabled()) {
+
+            this.TxtSalario.setText("550000");
+        }
+        this.CkConserje.setSelected(true);
+    }//GEN-LAST:event_CkConserjeActionPerformed
+
+    private void CkMantenimientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CkMantenimientoActionPerformed
+        // TODO add your handling code here:
+        DescarmarChecks();
+        if (!this.btnEliminar.isEnabled()) {
+
+            this.TxtSalario.setText("650000");
+        }
+        this.CkMantenimiento.setSelected(true);
+    }//GEN-LAST:event_CkMantenimientoActionPerformed
 
     private void TxtCedulaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TxtCedulaKeyTyped
         // TODO add your handling code here:
@@ -302,79 +542,13 @@ public class FrmEmpleados extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_TxtCedulaKeyTyped
 
-    private void TxtFechaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TxtFechaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_TxtFechaActionPerformed
-
-    private void TxtCorreoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TxtCorreoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_TxtCorreoActionPerformed
-
-    private void TxtNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TxtNombreActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_TxtNombreActionPerformed
-
-    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-
-        //        if (!this.TxtNumero.getText().isEmpty() && !this.TxtPrecio.getText().isEmpty()) {
-            //            MHabitacion Temp = CrearHabitacion();
-            //            try {
-                //                if (this.btnEliminar.isEnabled()) {
-                    //
-                    //                    this.controlador.Actualizar(Temp);
-                    //                } else {
-                    //                    if (this.controlador.Buscar(Temp.getNumero()) == null) {
-                        //
-                        //                        this.controlador.Crear(Temp);
-                        //                        System.out.println(this.controlador.getLista());
-                        //                    } else {
-                        //                        System.out.println("Ya existe");
-                        //                    }
-                    //                }
-                //            } catch (Exception e) {
-                //                System.out.println(e);
-                //            }
-            //
-            //        }
-    }//GEN-LAST:event_btnGuardarActionPerformed
-
-    private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
-        //        this.clear();
-        //        Limpiar();
-    }//GEN-LAST:event_btnNuevoActionPerformed
-
-    private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
-        this.dispose();
-    }//GEN-LAST:event_btnSalirActionPerformed
-
-    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-
-        //        FrmHabitacionesBuscar frm = new FrmHabitacionesBuscar(null, true);
-        //        frm.setControlador(controlador);
-        //        frm.setVisible(true);
-        //
-        //        this.TxtNumero.setEditable(false);
-        //        this.TxtPrecio.setEditable(false);
-        //        this.btnEliminar.setEnabled(true);
-        //
-        //        ValidarCancelar();
-        //
-        //        try {
-            //            showData();
-            //        } catch (Exception e) {
-            //            System.out.println("error 2");
-            //        }
-    }//GEN-LAST:event_btnBuscarActionPerformed
-
-    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        // TODO add your handling code here:
-        //        MHabitacion Temp = CrearHabitacion();
-        //        try {
-            //            this.controlador.Eliminar(Temp);
-            //        } catch (Exception ex) {
-            //            System.out.println(ex.getMessage());
-            //        }
-    }//GEN-LAST:event_btnEliminarActionPerformed
+    public void DescarmarChecks() {
+        this.CkConserje.setSelected(false);
+        this.CkGerente.setSelected(false);
+        this.CkMantenimiento.setSelected(false);
+        this.CkRecepcionista.setSelected(false);
+        this.CkSupervisor.setSelected(false);
+    }
 
     /**
      * @param args the command line arguments
@@ -390,16 +564,24 @@ public class FrmEmpleados extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FrmEmpleados.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrmEmpleados.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FrmEmpleados.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrmEmpleados.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FrmEmpleados.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrmEmpleados.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FrmEmpleados.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrmEmpleados.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
@@ -413,26 +595,32 @@ public class FrmEmpleados extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel LbEdad;
-    private javax.swing.JLabel LblNumero;
-    private javax.swing.JLabel LblPrecio;
-    private javax.swing.JTextField Txt;
+    private javax.swing.JCheckBox CkConserje;
+    private javax.swing.JCheckBox CkGerente;
+    private javax.swing.JCheckBox CkMantenimiento;
+    private javax.swing.JCheckBox CkRecepcionista;
+    private javax.swing.JCheckBox CkSupervisor;
     private javax.swing.JTextField TxtCedula;
-    private javax.swing.JTextField TxtCorreo;
-    private javax.swing.JTextField TxtFecha;
     private javax.swing.JTextField TxtNombre;
-    private javax.swing.JTextField TxtTipo;
+    private javax.swing.JTextField TxtSalario;
+    private javax.swing.JTextField TxtTelefono;
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnNuevo;
     private javax.swing.JButton btnSalir;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void showMessage(String msg, int messageType) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

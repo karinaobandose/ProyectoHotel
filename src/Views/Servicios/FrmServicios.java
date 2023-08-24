@@ -330,20 +330,26 @@ public class FrmServicios extends javax.swing.JFrame implements Vista {
                     }
                 }
             } catch (Exception e) {
-                System.out.println(e);
+                System.out.println("Error 4 mas de 1 punto");
             }
 
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     public MServicio CrearServicio() {
-        Integer Codigo = Integer.valueOf(this.TxtCodigo.getText());
-        String Nombre = this.TxtNombre.getText();
-        String Descrip = this.TxtDescripcion.getText();
-        double Precio = Double.parseDouble(this.TxtPrecio.getText());
-
+        
+        try {
+            Integer Codigo = Integer.valueOf(this.TxtCodigo.getText());
+            String Nombre = this.TxtNombre.getText();
+            String Descrip = this.TxtDescripcion.getText();
+            double Precio = Double.parseDouble(this.TxtPrecio.getText());
+            
 //        this.TxtCodigo.setText(String.valueOf(utiles.AutoNumerico()));
-        return new MServicio(Codigo, Nombre, Descrip, Precio);
+           return new MServicio(Codigo, Nombre, Descrip, Precio);
+        } catch (Exception e) {
+            return null;
+        }
+        
     }
 
 
@@ -386,20 +392,20 @@ public class FrmServicios extends javax.swing.JFrame implements Vista {
 
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        // TODO add your handling code here:
-        //        MHabitacion Temp = CrearHabitacion();
-        //        try {
-        //            this.controlador.Eliminar(Temp);
-        //        } catch (Exception ex) {
-        //            System.out.println(ex.getMessage());
-        //        }
+//         TODO add your handling code here:
+                MServicio Temp = CrearServicio();
+                try {
+                    this.controlador.Eliminar(Temp);
+                } catch (Exception ex) {
+                    System.out.println(ex.getMessage());
+                }
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void TxtPrecioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TxtPrecioKeyTyped
         // TODO add your handling code here:
 
         char c = evt.getKeyChar();
-        if (!(Character.isDigit(c) || c == KeyEvent.VK_BACK_SPACE || c == KeyEvent.VK_DELETE)) {
+        if (!(Character.isDigit(c) || c == KeyEvent.VK_BACK_SPACE || c == KeyEvent.VK_DELETE || c == KeyEvent.VK_PERIOD)) {
             evt.consume(); // Consume el evento si no es un dígito válido
         }
     }//GEN-LAST:event_TxtPrecioKeyTyped
@@ -438,7 +444,7 @@ public class FrmServicios extends javax.swing.JFrame implements Vista {
                 new FrmServicios().setVisible(true);
             }
         });
-    }
+    } 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel LblNumero;

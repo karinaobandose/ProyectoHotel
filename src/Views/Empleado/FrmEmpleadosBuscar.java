@@ -4,13 +4,26 @@
  */
 package Views.Empleado;
 
+import Controllers.CEmpleado;
+import Controllers.Controlador;
+import Models.MEmpleado;
+import Views.Vista;
 import java.awt.event.KeyEvent;
+import java.util.Iterator;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author emalo
  */
-public class FrmEmpleadosBuscar extends javax.swing.JDialog {
+public class FrmEmpleadosBuscar extends javax.swing.JDialog implements Vista {
+
+    private Controlador<MEmpleado> controlador;
+
+    @Override
+    public void setControlador(Controlador controlador) {
+        this.controlador = (CEmpleado) controlador;
+    }
 
     /**
      * Creates new form FrmEmpleadosBuscra
@@ -40,6 +53,11 @@ public class FrmEmpleadosBuscar extends javax.swing.JDialog {
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
@@ -86,6 +104,11 @@ public class FrmEmpleadosBuscar extends javax.swing.JDialog {
         jLabel3.setText("Numero de cedula");
 
         txtFiltro.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        txtFiltro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtFiltroActionPerformed(evt);
+            }
+        });
         txtFiltro.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtFiltroKeyPressed(evt);
@@ -103,14 +126,14 @@ public class FrmEmpleadosBuscar extends javax.swing.JDialog {
 
             },
             new String [] {
-                "Numero", "Tipo", "Estado", "Precio"
+                "Cedula", "Nombre", "Telefono", "Puesto", "Salario"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.Double.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, false, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -123,6 +146,7 @@ public class FrmEmpleadosBuscar extends javax.swing.JDialog {
         });
         tbListaHab.setColumnSelectionAllowed(true);
         jScrollPane1.setViewportView(tbListaHab);
+        tbListaHab.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -152,7 +176,7 @@ public class FrmEmpleadosBuscar extends javax.swing.JDialog {
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Clientes");
+        jLabel1.setText("Empleados");
         jLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -184,24 +208,48 @@ public class FrmEmpleadosBuscar extends javax.swing.JDialog {
 
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
 
-        //        if (this.tbListaHab.getRowCount()>0&&this.tbListaHab.getSelectedRow()>-1){
-            //            Integer Numero =((Integer) this.tbListaHab.getValueAt(this.tbListaHab.getSelectedRow(),0)) ;
-            //            Integer Tipo =this.SaberTipo((String)(this.tbListaHab.getValueAt(this.tbListaHab.getSelectedRow(),1)));
-            //
-            //            boolean Estado =this.SaberEstado(((String) this.tbListaHab.getValueAt(this.tbListaHab.getSelectedRow(),2)));
-            //
-            //            Double Precio =((double) this.tbListaHab.getValueAt(this.tbListaHab.getSelectedRow(),3)) ;
-            //
-            //            MHabitacion Habitacion=new MHabitacion(Numero,Tipo,Precio);
-            //            this.controlador.setObjecto(Habitacion);
-            //            this.dispose();
-            //        }
+                if (this.tbListaHab.getRowCount()>0&&this.tbListaHab.getSelectedRow()>-1){
+                    Integer Cedula =((Integer) this.tbListaHab.getValueAt(this.tbListaHab.getSelectedRow(),0)) ;
+                    String Nombre =((String)(this.tbListaHab.getValueAt(this.tbListaHab.getSelectedRow(),1)));
+        
+                    String Telefono =(((String) this.tbListaHab.getValueAt(this.tbListaHab.getSelectedRow(),2)));
+        
+                    Integer Puesto = this.SaberNumeroPuesto(((String) this.tbListaHab.getValueAt(this.tbListaHab.getSelectedRow(),3))) ;
+                    double Salario = (((Double) this.tbListaHab.getValueAt(this.tbListaHab.getSelectedRow(),4))) ;
+        
+                    MEmpleado Empleado=new MEmpleado(Cedula,Nombre,Telefono,Puesto,Salario);
+                    this.controlador.setObjecto(Empleado);
+                    this.dispose();
+                }
     }//GEN-LAST:event_btnAceptarActionPerformed
 
+    public int SaberNumeroPuesto(String Puesto){
+        int Temp =0;
+        switch(Puesto){
+            case "Recepcionista" -> {
+                return 1;
+            }
+            case "Gerente" -> {
+                return 2;
+            }
+            case "Conserje" -> {
+                return 3;            
+            }
+            case "Supervisor" -> {
+                return 4;
+            }
+            case "Mantenimiento" -> {
+                return 5;
+            }
+        }
+        
+        return Temp; 
+   }
+    
+    
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
 
-        //        this.controlador.setObjecto(null);
-
+                this.controlador.setObjecto(null);
         this.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
@@ -215,29 +263,33 @@ public class FrmEmpleadosBuscar extends javax.swing.JDialog {
 
     private void txtFiltroKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFiltroKeyReleased
         // TODO add your handling code here:
-        //        String filtro = this.txtFiltro.getText().trim();
-        //        System.out.println(filtro);
-        //
-        //        if (!filtro.isEmpty()) {
-            //
-            //            System.out.println("%" + this.txtFiltro.getText() + "%");
-            //            controlador.Leer(this.txtFiltro.getText());
-            //
-            //            try {
-                //                DefaultTableModel table = (DefaultTableModel) this.tbListaHab.getModel();
-                //                table.setRowCount(0);
-                //                Integer Numero = controlador.getObjecto().getNumero();
-                //                String Tipo = SaberTipo(controlador.getObjecto().getTipo());
-                //                String Estado = SaberEstado(controlador.getObjecto().isEstado());
-                //                Double Precio = controlador.getObjecto().getPrecio();
-                //                table.addRow(new Object[]{Numero, Tipo, Estado, Precio});
-                //                this.tbListaHab.setModel(table);
-                //            } catch (Exception e) {
-                //            }
-            //
-            //        }else{
-            //            this.showData();
-            //        }
+                String filtro = this.txtFiltro.getText().trim();
+                System.out.println(filtro);
+        
+                if (!filtro.isEmpty()) {
+        
+                    System.out.println("%" + this.txtFiltro.getText() + "%");
+                    controlador.Leer(this.txtFiltro.getText());
+        
+                    try {
+                        DefaultTableModel table = (DefaultTableModel) this.tbListaHab.getModel();
+                        table.setRowCount(0);
+                        Integer Cedula = controlador.getObjecto().getCedula();
+                        String Nombre = controlador.getObjecto().getNombre();
+                        String Telefono = controlador.getObjecto().getTelefono();
+                        String Puesto = this.SaberPuesto(controlador.getObjecto().getPuesto());
+                        Double Salario = controlador.getObjecto().getSalario();
+                        
+                        
+                        
+                        table.addRow(new Object[]{Cedula,Nombre,Telefono,Puesto,Salario});
+                        this.tbListaHab.setModel(table);
+                    } catch (Exception e) {
+                    }
+        
+                }else{
+                    this.showData();
+                }
     }//GEN-LAST:event_txtFiltroKeyReleased
 
     private void txtFiltroKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFiltroKeyTyped
@@ -246,11 +298,20 @@ public class FrmEmpleadosBuscar extends javax.swing.JDialog {
         //        System.out.println(filtro);
         //
         //        if(!filtro.isEmpty()){
-            //
-            //            System.out.println("%"+this.txtFiltro.getText()+"%");
-            //            controlador.Leer(this.txtFiltro.getText());
-            //        }
+        //
+        //            System.out.println("%"+this.txtFiltro.getText()+"%");
+        //            controlador.Leer(this.txtFiltro.getText());
+        //        }
     }//GEN-LAST:event_txtFiltroKeyTyped
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        // TODO add your handling code here:
+        showData();
+    }//GEN-LAST:event_formWindowOpened
+
+    private void txtFiltroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFiltroActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtFiltroActionPerformed
 
     /**
      * @param args the command line arguments
@@ -306,4 +367,52 @@ public class FrmEmpleadosBuscar extends javax.swing.JDialog {
     private javax.swing.JTable tbListaHab;
     private javax.swing.JTextField txtFiltro;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void showData() {
+        DefaultTableModel table = (DefaultTableModel) this.tbListaHab.getModel();
+        table.setRowCount(0);
+        if (this.controlador.getLista() != null) {
+            Iterator<MEmpleado> iterator = this.controlador.getLista().iterator();
+            while (iterator.hasNext()) {
+                MEmpleado MEmpleado = iterator.next();
+
+                Integer Cedula = MEmpleado.getCedula();
+                String Nombre = MEmpleado.getNombre();
+                String Telefono = MEmpleado.getTelefono();
+                Double Salario = MEmpleado.getSalario();
+                String Puesto = SaberPuesto(MEmpleado.getPuesto());
+
+                table.addRow(new Object[]{Cedula,Nombre,Telefono,Puesto,Salario});
+            }
+        }
+        this.tbListaHab.setModel(table);
+    }
+
+    public String SaberPuesto(int Puesto) {
+        switch (Puesto) {
+            case 1 -> {
+                return "Recepcionista";
+            }
+            case 2 -> {
+                return "Gerente";
+            }
+            case 3 -> {
+                return "Conserje";            
+            }
+            case 4 -> {
+                return "Supervisor";
+            }
+            case 5 -> {
+                return "Mantenimiento";
+            }
+        }
+        
+        return null;
+    }
+
+    @Override
+    public void showMessage(String msg, int messageType) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

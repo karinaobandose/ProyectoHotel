@@ -16,6 +16,14 @@ public class MEmpleado {
     private Integer Puesto; //1-Recepcionista, 2-Gerente, 3-Conserje, 4-Supervisor, 5-Mantenimiento
     private Double Salario;
 
+    public MEmpleado(Integer Cedula, String Nombre, String Telefono, Integer Puesto, Double Salario) {
+        this.Cedula = Cedula;
+        this.Nombre = Nombre;
+        this.Telefono = Telefono;
+        this.Puesto = Puesto;
+        this.Salario = Salario;
+    }
+
     public MEmpleado(Integer Cedula, String Nombre, String Telefono, Integer Puesto) {
         this.Cedula = Cedula;
         this.Nombre = Nombre;

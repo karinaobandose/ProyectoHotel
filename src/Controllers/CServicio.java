@@ -102,7 +102,21 @@ public class CServicio implements Controlador<MServicio> {
 
     @Override
     public void Eliminar(MServicio objecto) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        int NumeroTemp = objecto.getCodigo();
+        MServicio MServicioTemp = null;
+        for (MServicio MServicio : Lista) {
+            if (MServicio.getCodigo().equals(NumeroTemp)) {
+                MServicioTemp = MServicio;
+                break;
+            }
+        }
+        if (MServicioTemp == null) {
+            System.out.println("Null");
+            throw new Exception("El dato no se puede eliminar");
+
+        }
+
+        this.getLista().remove(MServicioTemp);
     }
 
 }
