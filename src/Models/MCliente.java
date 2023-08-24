@@ -11,8 +11,8 @@ import java.time.Period;
  *
  * @author emalo
  */
-public class MCliente {
-    private int Cedula;
+public class MCliente implements Objectos{
+    private Integer Cedula;
     private String Nombre;
     private LocalDate FechaNacimiento;
     private String Telefono;
@@ -26,13 +26,13 @@ public class MCliente {
         this.Correo = Correo;
     }
     
-    public int CalcularEdad(LocalDate FechaNacimiento) {
-        LocalDate FechaActual = LocalDate.now();
-        Period periodo = Period.between(FechaNacimiento, FechaActual);
-        return periodo.getYears();
-    } 
+//    public int CalcularEdad(LocalDate FechaNacimiento) {
+//        LocalDate FechaActual = LocalDate.now();
+//        Period periodo = Period.between(FechaNacimiento, FechaActual);
+//        return periodo.getYears();
+//    } 
 
-    public int getCedula() {
+    public Integer getCedula() {
         return Cedula;
     }
 
@@ -75,6 +75,11 @@ public class MCliente {
     @Override
     public String toString() {
         return "MCliente{" + "Cedula=" + Cedula + ", Nombre=" + Nombre + ", FechaNacimiento=" + FechaNacimiento + ", Telefono=" + Telefono + ", Correo=" + Correo + '}';
+    }
+
+    @Override
+    public boolean EstaCompleto() {
+        return this.Cedula != null && this.Nombre != null && this.FechaNacimiento != null;
     }
     
     

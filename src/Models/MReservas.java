@@ -19,11 +19,12 @@ public class MReservas {
     private LocalDate FechaEntrada;
     private LocalDate FechaSalida;
     private Integer Estado; //1-Pendiente, 2-En ejecucion, 3-Finalizada, 4-Cancelada
+    private Integer Estadia;
     private Double Subtotal;
     private Double Impuestos;
     private Double Total;
 
-    public MReservas(Integer NumeroReserva, MCliente Cliente, MHabitacion Habitacion, LocalDate FechaEntrada, LocalDate FechaSalida, Integer Estado) {
+    public MReservas(Integer NumeroReserva, MCliente Cliente, MHabitacion Habitacion, LocalDate FechaEntrada, LocalDate FechaSalida) {
         this.NumeroReserva = NumeroReserva;
         this.Cliente = Cliente;
         this.Habitacion = Habitacion;
@@ -38,8 +39,11 @@ public class MReservas {
         Period period = Period.between(FechaEntrada, FechaSalida);
         
         double Precio = Habitacion.getPrecio();
-        
-        this.Subtotal = (Precio / (1+0.13)) * period.getDays();
+        int years = period.getYears()*365; //En caso de años los pasamos a dias
+        int meses = period.getMonths()*30; //En caso de meses los pàsamos a dias
+        int dias = period.getDays();
+        this.Estadia = years + meses + dias;
+        this.Subtotal = (Precio / (1+0.13)) * this.Estadia;
         this.Impuestos = this.Subtotal * 0.13;
         this.Total = this.Subtotal + this.Impuestos;
     }
@@ -115,6 +119,21 @@ public class MReservas {
     public void setTotal(Double Total) {
         this.Total = Total;
     }
+
+    public Integer getEstadia() {
+        return Estadia;
+    }
+
+    public void setEstadia(Integer Estadia) {
+        this.Estadia = Estadia;
+    }
+
+    @Override
+    public String toString() {
+        return "MReservas{" + "NumeroReserva=" + NumeroReserva + ", Cliente=" + Cliente.getNombre() + ", Habitacion=" + Habitacion.getTipo() + ", FechaEntrada=" + FechaEntrada + ", FechaSalida=" + FechaSalida + ", Estado=" + Estado + ", Estadia=" + Estadia + ", Subtotal=" + Subtotal + ", Impuestos=" + Impuestos + ", Total=" + Total + '}';
+    }
+
+    
     
     
     

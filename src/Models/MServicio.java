@@ -9,7 +9,7 @@ package Models;
  * @author emalo
  */
 public class MServicio {
-    private int Codigo;
+    private Integer Codigo;
     private String Nombre;
     private String Descripcion;
     private Double Precio;
@@ -21,7 +21,7 @@ public class MServicio {
         this.Precio = Precio;
     }
 
-    public int getCodigo() {
+    public Integer getCodigo() {
         return Codigo;
     }
 

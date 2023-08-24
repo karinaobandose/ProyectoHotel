@@ -20,6 +20,13 @@ public class MHabitacion {
         this.Estado = false;
         SaberPrecio(Tipo);
     }
+
+    public MHabitacion(Integer Numero, Integer Tipo, double Precio) {
+        this.Numero = Numero;
+        this.Tipo = Tipo;
+        this.Estado = false;
+        this.Precio = Precio;
+    }
     
     public void SaberPrecio(Integer Tipo){
         switch(Tipo){
