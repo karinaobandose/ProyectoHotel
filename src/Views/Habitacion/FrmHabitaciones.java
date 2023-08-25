@@ -8,11 +8,13 @@ import Controllers.CHabitaciones;
 import Controllers.Controlador;
 import Models.MHabitacion;
 import Views.Vista;
+import static Views.Vista.Correcto;
 import java.awt.Dialog;
 import java.awt.event.KeyEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -21,8 +23,7 @@ import javax.swing.JFrame;
 public class FrmHabitaciones extends javax.swing.JFrame implements Vista {
 
     private Controlador<MHabitacion> controlador;
-    
-    
+
     @Override
     public void setControlador(Controlador controlador) {
         this.controlador = (CHabitaciones) controlador;
@@ -55,7 +56,7 @@ public class FrmHabitaciones extends javax.swing.JFrame implements Vista {
         btnBuscar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
-        TxtTipo = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         TxtNumero = new javax.swing.JTextField();
         TxtPrecio = new javax.swing.JTextField();
@@ -75,6 +76,11 @@ public class FrmHabitaciones extends javax.swing.JFrame implements Vista {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 204));
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -153,22 +159,22 @@ public class FrmHabitaciones extends javax.swing.JFrame implements Vista {
         jPanel3.setBackground(new java.awt.Color(255, 255, 204));
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        TxtTipo.setText("jTextField2");
+        jLabel1.setText("Registro Habitaciones");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(241, 241, 241)
-                .addComponent(TxtTipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(186, 186, 186)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(19, Short.MAX_VALUE)
-                .addComponent(TxtTipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -277,7 +283,7 @@ public class FrmHabitaciones extends javax.swing.JFrame implements Vista {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 620, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -295,6 +301,11 @@ public class FrmHabitaciones extends javax.swing.JFrame implements Vista {
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
         this.dispose();
     }//GEN-LAST:event_btnSalirActionPerformed
+
+    @Override
+    public Controlador<MHabitacion> getControlador() {
+        return controlador;
+    }
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
 //        FrmBuscarProveedor frm = new FrmBuscarProveedor(null,true);
@@ -317,13 +328,11 @@ public class FrmHabitaciones extends javax.swing.JFrame implements Vista {
         try {
             showData();
         } catch (Exception e) {
+//            JOptionPane.showMessageDialog(null, "\"No encontrado\"", "Error", Error);
+
             System.out.println("error 2");
         }
 
-        System.out.println("xd");
-        System.out.println("xd");
-        System.out.println("xd");
-        System.out.println("xd");
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     public void ValidarCancelar() {
@@ -349,18 +358,28 @@ public class FrmHabitaciones extends javax.swing.JFrame implements Vista {
             MHabitacion Temp = CrearHabitacion();
             try {
                 if (this.btnEliminar.isEnabled()) {
-                    
+
                     this.controlador.Actualizar(Temp);
+                    JOptionPane.showMessageDialog(null, "\"Actualizado\"", "Info", Correcto);
+
+                    this.Limpiar();
                 } else {
                     if (this.controlador.Buscar(Temp.getNumero()) == null) {
-                        
+
                         this.controlador.Crear(Temp);
                         System.out.println(this.controlador.getLista());
+
+                        JOptionPane.showMessageDialog(null, "\"Agregado\"", "info", Correcto);
+                        this.Limpiar();
                     } else {
+                        JOptionPane.showMessageDialog(null, "\"No agregado\"", "Error", Error);
+
                         System.out.println("Ya existe");
                     }
                 }
             } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "\"No actualizado\"", "Error", Error);
+
                 System.out.println(e);
             }
 
@@ -369,23 +388,22 @@ public class FrmHabitaciones extends javax.swing.JFrame implements Vista {
 
     }//GEN-LAST:event_btnGuardarActionPerformed
 
-    
-    public MHabitacion CrearHabitacion(){
+    public MHabitacion CrearHabitacion() {
         int Eleccion = 0;
-            if (this.CkIndividual.isSelected()) {
-                Eleccion = 1;
-            } else if (this.CkDoble.isSelected()) {
-                Eleccion = 2;
-            } else if (this.CkSuite.isSelected()) {
-                Eleccion = 3;
-            }
+        if (this.CkIndividual.isSelected()) {
+            Eleccion = 1;
+        } else if (this.CkDoble.isSelected()) {
+            Eleccion = 2;
+        } else if (this.CkSuite.isSelected()) {
+            Eleccion = 3;
+        }
 
-            int Numero = Integer.parseInt(this.TxtNumero.getText());
-            double Precio = Double.parseDouble(this.TxtPrecio.getText());
-            MHabitacion Temp = new MHabitacion(Numero, Eleccion, Precio);
-            return Temp;
+        int Numero = Integer.parseInt(this.TxtNumero.getText());
+        double Precio = Double.parseDouble(this.TxtPrecio.getText());
+        MHabitacion Temp = new MHabitacion(Numero, Eleccion, Precio);
+        return Temp;
     }
-    
+
     public int SaberCheckMarcado() {
         if (this.CkIndividual.isSelected()) {
             return 1;
@@ -401,7 +419,7 @@ public class FrmHabitaciones extends javax.swing.JFrame implements Vista {
         Limpiar();
     }//GEN-LAST:event_btnNuevoActionPerformed
 
-    public void Limpiar(){
+    public void Limpiar() {
         this.controlador.setObjecto(null);
         this.TxtNumero.setEditable(true);
         this.TxtPrecio.setEditable(true);
@@ -412,7 +430,7 @@ public class FrmHabitaciones extends javax.swing.JFrame implements Vista {
         this.CkSuite.setSelected(false);
         this.btnEliminar.setEnabled(false);
     }
-    
+
     private void BtnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnNuevoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_BtnNuevoActionPerformed
@@ -424,7 +442,7 @@ public class FrmHabitaciones extends javax.swing.JFrame implements Vista {
         if (!this.btnEliminar.isEnabled()) {
             this.TxtPrecio.setText("45000");
         }
-        
+
     }//GEN-LAST:event_CkIndividualActionPerformed
 
     private void CkDobleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CkDobleActionPerformed
@@ -434,7 +452,7 @@ public class FrmHabitaciones extends javax.swing.JFrame implements Vista {
         if (!this.btnEliminar.isEnabled()) {
             this.TxtPrecio.setText("80000");
         }
-        
+
     }//GEN-LAST:event_CkDobleActionPerformed
 
     private void CkSuiteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CkSuiteActionPerformed
@@ -444,7 +462,7 @@ public class FrmHabitaciones extends javax.swing.JFrame implements Vista {
         if (!this.btnEliminar.isEnabled()) {
             this.TxtPrecio.setText("140000");
         }
-        
+
     }//GEN-LAST:event_CkSuiteActionPerformed
 
     private void TxtPrecioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TxtPrecioActionPerformed
@@ -477,10 +495,20 @@ public class FrmHabitaciones extends javax.swing.JFrame implements Vista {
         MHabitacion Temp = CrearHabitacion();
         try {
             this.controlador.Eliminar(Temp);
+            JOptionPane.showMessageDialog(null, "\"Eliminado\"", "Info", Correcto);
+
+            this.Limpiar();
         } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "\"No eliminado\"", "Error", Error);
+
             System.out.println(ex.getMessage());
         }
     }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        // TODO add your handling code here:
+        this.Limpiar();
+    }//GEN-LAST:event_formWindowOpened
 
     /**
      * @param args the command line arguments
@@ -528,12 +556,12 @@ public class FrmHabitaciones extends javax.swing.JFrame implements Vista {
     private javax.swing.JLabel LblTipo;
     private javax.swing.JTextField TxtNumero;
     private javax.swing.JTextField TxtPrecio;
-    private javax.swing.JTextField TxtTipo;
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnNuevo;
     private javax.swing.JButton btnSalir;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

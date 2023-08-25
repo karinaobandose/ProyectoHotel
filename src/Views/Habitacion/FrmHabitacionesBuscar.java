@@ -19,6 +19,11 @@ import javax.swing.table.DefaultTableModel;
 public class FrmHabitacionesBuscar extends javax.swing.JDialog implements Vista {
 
     private Controlador<MHabitacion> controlador;
+    
+    @Override
+    public Controlador<MHabitacion> getControlador() {
+        return controlador;
+    }
 
     public void setControlador(Controlador controlador) {
         this.controlador = (CHabitaciones) controlador;

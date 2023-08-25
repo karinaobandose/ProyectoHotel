@@ -12,11 +12,12 @@ import Controllers.Controlador;
  */
 public interface Vista {
     
-    public static int messageTypeSuccess=1;
-    public static int messageTypeError=2;
+    public static int Correcto=1;
+    public static int Error=2;
     public static int messageTypeConfirm=3;
     
     public void setControlador(Controlador controlador);
+    public Controlador getControlador();
     public void showData();
     public void showMessage(String msg,int messageType);
 }

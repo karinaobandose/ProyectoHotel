@@ -9,7 +9,9 @@ import Controllers.Controlador;
 import Models.MServicio;
 import Models.Utils;
 import Views.Vista;
+import static Views.Vista.Error;
 import java.awt.event.KeyEvent;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -39,7 +41,7 @@ public class FrmServicios extends javax.swing.JFrame implements Vista {
     @Override
     public void showData() {
         this.TxtCodigo.setText(String.valueOf(this.controlador.getObjecto().getCodigo()));
-        
+
         this.TxtNombre.setText(String.valueOf(this.controlador.getObjecto().getNombre()));
         this.TxtDescripcion.setText(String.valueOf(this.controlador.getObjecto().getDescripcion()));
         this.TxtPrecio.setText(String.valueOf(this.controlador.getObjecto().getPrecio()));
@@ -55,6 +57,7 @@ public class FrmServicios extends javax.swing.JFrame implements Vista {
         this.TxtCodigo.setText(String.valueOf(utiles.AutoNumerico()));
         this.TxtCodigo.setEditable(false);
         this.btnEliminar.setEnabled(false);
+        this.Limpiar();
     }
 
     /**
@@ -67,7 +70,7 @@ public class FrmServicios extends javax.swing.JFrame implements Vista {
     private void initComponents() {
 
         jPanel3 = new javax.swing.JPanel();
-        TxtTipo = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         TxtCodigo = new javax.swing.JTextField();
         LblNumero = new javax.swing.JLabel();
@@ -85,27 +88,32 @@ public class FrmServicios extends javax.swing.JFrame implements Vista {
         btnEliminar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 204));
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        TxtTipo.setText("jTextField2");
+        jLabel1.setText("Registro Servicios");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(241, 241, 241)
-                .addComponent(TxtTipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(181, 181, 181))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(19, Short.MAX_VALUE)
-                .addComponent(TxtTipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE)
+                .addGap(14, 14, 14))
         );
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 204));
@@ -319,17 +327,27 @@ public class FrmServicios extends javax.swing.JFrame implements Vista {
                 if (this.btnEliminar.isEnabled()) {
 
                     this.controlador.Actualizar(Temp);
+                    JOptionPane.showMessageDialog(null, "\"Actualizar\"", "Exito", Correcto);
+
+                    this.Limpiar();
                 } else {
                     if (this.controlador.Buscar(Temp.getCodigo()) == null) {
 
                         this.controlador.Crear(Temp);
                         System.out.println(this.controlador.getLista());
                         this.TxtCodigo.setText(String.valueOf(utiles.AutoNumerico()));
+
+                        JOptionPane.showMessageDialog(null, "\"Agregada\"", "Exito", Correcto);
+                        this.Limpiar();
                     } else {
+                        JOptionPane.showMessageDialog(null, "\" No Agregada\"", "error", Error);
+
                         System.out.println("Ya existe");
                     }
                 }
             } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "\"No actualizado\"", "error", Error);
+
                 System.out.println("Error 4 mas de 1 punto");
             }
 
@@ -337,19 +355,19 @@ public class FrmServicios extends javax.swing.JFrame implements Vista {
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     public MServicio CrearServicio() {
-        
+
         try {
             Integer Codigo = Integer.valueOf(this.TxtCodigo.getText());
             String Nombre = this.TxtNombre.getText();
             String Descrip = this.TxtDescripcion.getText();
             double Precio = Double.parseDouble(this.TxtPrecio.getText());
-            
+
 //        this.TxtCodigo.setText(String.valueOf(utiles.AutoNumerico()));
-           return new MServicio(Codigo, Nombre, Descrip, Precio);
+            return new MServicio(Codigo, Nombre, Descrip, Precio);
         } catch (Exception e) {
             return null;
         }
-        
+
     }
 
 
@@ -377,6 +395,8 @@ public class FrmServicios extends javax.swing.JFrame implements Vista {
         try {
             showData();
         } catch (Exception e) {
+//            JOptionPane.showMessageDialog(null, "\"no encontrada\"", "error", Error);
+
             System.out.println("error 2");
             this.TxtCodigo.setText(String.valueOf(this.utiles.getNumero()));
         }
@@ -390,15 +410,24 @@ public class FrmServicios extends javax.swing.JFrame implements Vista {
         }
     }
 
+    @Override
+    public Controlador<MServicio> getControlador() {
+        return controlador;
+    }
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
 //         TODO add your handling code here:
-                MServicio Temp = CrearServicio();
-                try {
-                    this.controlador.Eliminar(Temp);
-                } catch (Exception ex) {
-                    System.out.println(ex.getMessage());
-                }
+        MServicio Temp = CrearServicio();
+        try {
+            this.controlador.Eliminar(Temp);
+            JOptionPane.showMessageDialog(null, "\"Eliminada\"", "Exito", Correcto);
+
+            this.Limpiar();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "\"No eliminada\"", "error", Error);
+
+            System.out.println(ex.getMessage());
+        }
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void TxtPrecioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TxtPrecioKeyTyped
@@ -409,6 +438,13 @@ public class FrmServicios extends javax.swing.JFrame implements Vista {
             evt.consume(); // Consume el evento si no es un dígito válido
         }
     }//GEN-LAST:event_TxtPrecioKeyTyped
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        // TODO add your handling code here:
+//        this.TxtCodigo.setText(String.valueOf(utiles.getNumero()));
+        this.Limpiar();
+        this.TxtCodigo.setText(String.valueOf(this.utiles.getNumero()));
+    }//GEN-LAST:event_formWindowOpened
 
     /**
      * @param args the command line arguments
@@ -444,7 +480,7 @@ public class FrmServicios extends javax.swing.JFrame implements Vista {
                 new FrmServicios().setVisible(true);
             }
         });
-    } 
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel LblNumero;
@@ -452,12 +488,12 @@ public class FrmServicios extends javax.swing.JFrame implements Vista {
     private javax.swing.JTextField TxtDescripcion;
     private javax.swing.JTextField TxtNombre;
     private javax.swing.JTextField TxtPrecio;
-    private javax.swing.JTextField TxtTipo;
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnNuevo;
     private javax.swing.JButton btnSalir;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;

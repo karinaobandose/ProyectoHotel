@@ -21,6 +21,11 @@ public class FrmEmpleadosBuscar extends javax.swing.JDialog implements Vista {
     private Controlador<MEmpleado> controlador;
 
     @Override
+    public Controlador<MEmpleado> getControlador() {
+        return controlador;
+    }
+
+    @Override
     public void setControlador(Controlador controlador) {
         this.controlador = (CEmpleado) controlador;
     }
@@ -208,24 +213,24 @@ public class FrmEmpleadosBuscar extends javax.swing.JDialog implements Vista {
 
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
 
-                if (this.tbListaHab.getRowCount()>0&&this.tbListaHab.getSelectedRow()>-1){
-                    Integer Cedula =((Integer) this.tbListaHab.getValueAt(this.tbListaHab.getSelectedRow(),0)) ;
-                    String Nombre =((String)(this.tbListaHab.getValueAt(this.tbListaHab.getSelectedRow(),1)));
-        
-                    String Telefono =(((String) this.tbListaHab.getValueAt(this.tbListaHab.getSelectedRow(),2)));
-        
-                    Integer Puesto = this.SaberNumeroPuesto(((String) this.tbListaHab.getValueAt(this.tbListaHab.getSelectedRow(),3))) ;
-                    double Salario = (((Double) this.tbListaHab.getValueAt(this.tbListaHab.getSelectedRow(),4))) ;
-        
-                    MEmpleado Empleado=new MEmpleado(Cedula,Nombre,Telefono,Puesto,Salario);
-                    this.controlador.setObjecto(Empleado);
-                    this.dispose();
-                }
+        if (this.tbListaHab.getRowCount() > 0 && this.tbListaHab.getSelectedRow() > -1) {
+            Integer Cedula = ((Integer) this.tbListaHab.getValueAt(this.tbListaHab.getSelectedRow(), 0));
+            String Nombre = ((String) (this.tbListaHab.getValueAt(this.tbListaHab.getSelectedRow(), 1)));
+
+            String Telefono = (((String) this.tbListaHab.getValueAt(this.tbListaHab.getSelectedRow(), 2)));
+
+            Integer Puesto = this.SaberNumeroPuesto(((String) this.tbListaHab.getValueAt(this.tbListaHab.getSelectedRow(), 3)));
+            double Salario = (((Double) this.tbListaHab.getValueAt(this.tbListaHab.getSelectedRow(), 4)));
+
+            MEmpleado Empleado = new MEmpleado(Cedula, Nombre, Telefono, Puesto, Salario);
+            this.controlador.setObjecto(Empleado);
+            this.dispose();
+        }
     }//GEN-LAST:event_btnAceptarActionPerformed
 
-    public int SaberNumeroPuesto(String Puesto){
-        int Temp =0;
-        switch(Puesto){
+    public int SaberNumeroPuesto(String Puesto) {
+        int Temp = 0;
+        switch (Puesto) {
             case "Recepcionista" -> {
                 return 1;
             }
@@ -233,7 +238,7 @@ public class FrmEmpleadosBuscar extends javax.swing.JDialog implements Vista {
                 return 2;
             }
             case "Conserje" -> {
-                return 3;            
+                return 3;
             }
             case "Supervisor" -> {
                 return 4;
@@ -242,14 +247,14 @@ public class FrmEmpleadosBuscar extends javax.swing.JDialog implements Vista {
                 return 5;
             }
         }
-        
-        return Temp; 
-   }
-    
-    
+
+        return Temp;
+    }
+
+
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
 
-                this.controlador.setObjecto(null);
+        this.controlador.setObjecto(null);
         this.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
@@ -263,33 +268,31 @@ public class FrmEmpleadosBuscar extends javax.swing.JDialog implements Vista {
 
     private void txtFiltroKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFiltroKeyReleased
         // TODO add your handling code here:
-                String filtro = this.txtFiltro.getText().trim();
-                System.out.println(filtro);
-        
-                if (!filtro.isEmpty()) {
-        
-                    System.out.println("%" + this.txtFiltro.getText() + "%");
-                    controlador.Leer(this.txtFiltro.getText());
-        
-                    try {
-                        DefaultTableModel table = (DefaultTableModel) this.tbListaHab.getModel();
-                        table.setRowCount(0);
-                        Integer Cedula = controlador.getObjecto().getCedula();
-                        String Nombre = controlador.getObjecto().getNombre();
-                        String Telefono = controlador.getObjecto().getTelefono();
-                        String Puesto = this.SaberPuesto(controlador.getObjecto().getPuesto());
-                        Double Salario = controlador.getObjecto().getSalario();
-                        
-                        
-                        
-                        table.addRow(new Object[]{Cedula,Nombre,Telefono,Puesto,Salario});
-                        this.tbListaHab.setModel(table);
-                    } catch (Exception e) {
-                    }
-        
-                }else{
-                    this.showData();
-                }
+        String filtro = this.txtFiltro.getText().trim();
+        System.out.println(filtro);
+
+        if (!filtro.isEmpty()) {
+
+            System.out.println("%" + this.txtFiltro.getText() + "%");
+            controlador.Leer(this.txtFiltro.getText());
+
+            try {
+                DefaultTableModel table = (DefaultTableModel) this.tbListaHab.getModel();
+                table.setRowCount(0);
+                Integer Cedula = controlador.getObjecto().getCedula();
+                String Nombre = controlador.getObjecto().getNombre();
+                String Telefono = controlador.getObjecto().getTelefono();
+                String Puesto = this.SaberPuesto(controlador.getObjecto().getPuesto());
+                Double Salario = controlador.getObjecto().getSalario();
+
+                table.addRow(new Object[]{Cedula, Nombre, Telefono, Puesto, Salario});
+                this.tbListaHab.setModel(table);
+            } catch (Exception e) {
+            }
+
+        } else {
+            this.showData();
+        }
     }//GEN-LAST:event_txtFiltroKeyReleased
 
     private void txtFiltroKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFiltroKeyTyped
@@ -383,7 +386,7 @@ public class FrmEmpleadosBuscar extends javax.swing.JDialog implements Vista {
                 Double Salario = MEmpleado.getSalario();
                 String Puesto = SaberPuesto(MEmpleado.getPuesto());
 
-                table.addRow(new Object[]{Cedula,Nombre,Telefono,Puesto,Salario});
+                table.addRow(new Object[]{Cedula, Nombre, Telefono, Puesto, Salario});
             }
         }
         this.tbListaHab.setModel(table);
@@ -398,7 +401,7 @@ public class FrmEmpleadosBuscar extends javax.swing.JDialog implements Vista {
                 return "Gerente";
             }
             case 3 -> {
-                return "Conserje";            
+                return "Conserje";
             }
             case 4 -> {
                 return "Supervisor";
@@ -407,7 +410,7 @@ public class FrmEmpleadosBuscar extends javax.swing.JDialog implements Vista {
                 return "Mantenimiento";
             }
         }
-        
+
         return null;
     }
 

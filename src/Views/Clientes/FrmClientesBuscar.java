@@ -21,6 +21,13 @@ public class FrmClientesBuscar extends javax.swing.JDialog implements Vista {
 
     private Controlador<MCliente> controlador;
 
+    @Override
+    public Controlador<MCliente> getControlador() {
+        return controlador;
+    }
+
+    
+    
     
     @Override
     public void setControlador(Controlador controlador) {

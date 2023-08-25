@@ -19,6 +19,11 @@ import javax.swing.table.DefaultTableModel;
 public class FrmServiciosBuscar extends javax.swing.JDialog implements Vista {
 
     private Controlador<MServicio> controlador;
+    
+    @Override
+    public Controlador<MServicio> getControlador() {
+        return controlador;
+    }
 
     @Override
     public void setControlador(Controlador controlador) {

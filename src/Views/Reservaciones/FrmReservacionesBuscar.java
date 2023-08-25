@@ -4,13 +4,101 @@
  */
 package Views.Reservaciones;
 
+import Controllers.CReserva;
+import Controllers.Controlador;
+import Models.MCliente;
+import Models.MHabitacion;
+import Models.MReservas;
+import Views.Vista;
 import java.awt.event.KeyEvent;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Iterator;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author emalo
  */
-public class FrmReservacionesBuscar extends javax.swing.JDialog {
+public class FrmReservacionesBuscar extends javax.swing.JDialog implements Vista {
+
+    private Controlador<MReservas> controlador;
+    MHabitacion MHabitacionTemp = null;
+    private ArrayList<MCliente> controladorClientes = new ArrayList<>();
+    private ArrayList<MHabitacion> controladorHabitaciones = new ArrayList<>();
+
+    public void setControladorClientes(ArrayList<MCliente> controladorClientes) {
+        this.controladorClientes = controladorClientes;
+    }
+
+    public ArrayList<MHabitacion> getControladorHabitaciones() {
+        return controladorHabitaciones;
+    }
+
+    public void setControladorHabitaciones(ArrayList<MHabitacion> controladorHabitaciones) {
+        this.controladorHabitaciones = controladorHabitaciones;
+    }
+
+    public ArrayList<MCliente> getControladorClientes() {
+        return controladorClientes;
+    }
+
+    @Override
+    public Controlador<MReservas> getControlador() {
+        return controlador;
+    }
+
+    @Override
+    public void setControlador(Controlador controlador) {
+        this.controlador = (CReserva) controlador;
+    }
+
+    @Override
+    public void showData() {
+        DefaultTableModel table = (DefaultTableModel) this.tbListaHab.getModel();
+        table.setRowCount(0);
+        if (this.controlador.getLista() != null) {
+            Iterator<MReservas> iterator = this.controlador.getLista().iterator();
+            while (iterator.hasNext()) {
+                MReservas MReservas = iterator.next();
+
+                Integer NumeroReserva = MReservas.getNumeroReserva();
+                Integer Cliente = MReservas.getCliente().getCedula();
+                Integer Habitacion = MReservas.getHabitacion().getNumero();
+                String FechaEntrada = String.valueOf(MReservas.getFechaEntrada());
+                String FechaSalida = String.valueOf(MReservas.getFechaSalida());
+
+                String Estado = SaberEstado(MReservas.getEstado()); //1-, 2-, 3-, 4-
+                Integer Estadia = MReservas.getEstadia();
+                Double Subtotal = MReservas.getSubtotal();
+                Double Impuestos = MReservas.getImpuestos();
+                Double Total = MReservas.getTotal();
+
+                table.addRow(new Object[]{NumeroReserva, Cliente, Habitacion, FechaEntrada, FechaSalida, Estado, Estadia, Subtotal, Impuestos, Total});
+            }
+        }
+        this.tbListaHab.setModel(table);
+    }
+
+    public String SaberEstado(Integer Estado) {
+        String temp = "";
+        switch (Estado) {
+            case 1 -> {
+                return "Pendiente";
+            }
+            case 2 -> {
+                return "En ejecucion";
+            }
+            case 3 -> {
+                return "Finalizada";
+            }
+            case 4 -> {
+                return "Cancelada";
+            }
+        }
+
+        return temp;
+    }
 
     /**
      * Creates new form FrmReservacionesBuscar
@@ -40,6 +128,11 @@ public class FrmReservacionesBuscar extends javax.swing.JDialog {
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
@@ -64,11 +157,11 @@ public class FrmReservacionesBuscar extends javax.swing.JDialog {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(115, 115, 115)
+                .addGap(387, 387, 387)
                 .addComponent(btnAceptar, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(98, 98, 98)
+                .addGap(125, 125, 125)
                 .addComponent(btnCancelar)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(456, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -83,9 +176,14 @@ public class FrmReservacionesBuscar extends javax.swing.JDialog {
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel3.setText("Numero de cedula");
+        jLabel3.setText("Numero de reserva");
 
         txtFiltro.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        txtFiltro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtFiltroActionPerformed(evt);
+            }
+        });
         txtFiltro.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtFiltroKeyPressed(evt);
@@ -103,14 +201,14 @@ public class FrmReservacionesBuscar extends javax.swing.JDialog {
 
             },
             new String [] {
-                "Numero", "Tipo", "Estado", "Precio"
+                "Numero Reserva", "Cedula Cliente", "Numero Habitacion", "Fecha Entrada", "Fecha Salida", "Estado", "Estadia", "Subtotal", "Impuesto", "Total"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class
+                java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -123,6 +221,7 @@ public class FrmReservacionesBuscar extends javax.swing.JDialog {
         });
         tbListaHab.setColumnSelectionAllowed(true);
         jScrollPane1.setViewportView(tbListaHab);
+        tbListaHab.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -135,7 +234,7 @@ public class FrmReservacionesBuscar extends javax.swing.JDialog {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -152,20 +251,20 @@ public class FrmReservacionesBuscar extends javax.swing.JDialog {
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Clientes");
+        jLabel1.setText("Reservaciones");
         jLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -184,24 +283,75 @@ public class FrmReservacionesBuscar extends javax.swing.JDialog {
 
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
 
-        //        if (this.tbListaHab.getRowCount()>0&&this.tbListaHab.getSelectedRow()>-1){
-            //            Integer Numero =((Integer) this.tbListaHab.getValueAt(this.tbListaHab.getSelectedRow(),0)) ;
-            //            Integer Tipo =this.SaberTipo((String)(this.tbListaHab.getValueAt(this.tbListaHab.getSelectedRow(),1)));
-            //
-            //            boolean Estado =this.SaberEstado(((String) this.tbListaHab.getValueAt(this.tbListaHab.getSelectedRow(),2)));
-            //
-            //            Double Precio =((double) this.tbListaHab.getValueAt(this.tbListaHab.getSelectedRow(),3)) ;
-            //
-            //            MHabitacion Habitacion=new MHabitacion(Numero,Tipo,Precio);
-            //            this.controlador.setObjecto(Habitacion);
-            //            this.dispose();
-            //        }
+        if (this.tbListaHab.getRowCount() > 0 && this.tbListaHab.getSelectedRow() > -1) {
+            
+            Integer NumeroReserva = ((Integer) this.tbListaHab.getValueAt(this.tbListaHab.getSelectedRow(), 0));
+            MCliente Cliente = MandarCliente(((Integer) this.tbListaHab.getValueAt(this.tbListaHab.getSelectedRow(), 1)));
+            MHabitacion Habitacion = MandarHabitacion(((Integer) this.tbListaHab.getValueAt(this.tbListaHab.getSelectedRow(), 2)));
+            LocalDate FechaEntrada =LocalDate.parse((String) this.tbListaHab.getValueAt(this.tbListaHab.getSelectedRow(), 3));
+            LocalDate FechaSalida =LocalDate.parse((String) this.tbListaHab.getValueAt(this.tbListaHab.getSelectedRow(), 4));
+            Integer Estado = this.SaberEstado((String) this.tbListaHab.getValueAt(this.tbListaHab.getSelectedRow(), 5));
+            Integer Estadia = ((Integer) this.tbListaHab.getValueAt(this.tbListaHab.getSelectedRow(), 6));
+            Double Subtotal = ((Double) this.tbListaHab.getValueAt(this.tbListaHab.getSelectedRow(), 7));
+            Double Impuestos = ((Double) this.tbListaHab.getValueAt(this.tbListaHab.getSelectedRow(), 8));
+            Double Total = ((Double) this.tbListaHab.getValueAt(this.tbListaHab.getSelectedRow(), 9));
+
+            MReservas MReservas = new MReservas(NumeroReserva, Cliente, Habitacion, FechaEntrada, FechaSalida, Estado, Estadia, Subtotal, Impuestos, Total);;
+            this.controlador.setObjecto(MReservas);
+            this.dispose();
+        }
     }//GEN-LAST:event_btnAceptarActionPerformed
+
+    public MHabitacion MandarHabitacion(Integer Tipo) {
+        MHabitacion MHabitacionTemp = null;
+
+        for (MHabitacion MHabitacion : controladorHabitaciones) {
+            if (MHabitacion.getTipo().equals(Tipo)) {
+                MHabitacionTemp = MHabitacion;
+                break;
+            }
+        }
+        
+        return MHabitacionTemp;
+    }
+
+    public MCliente MandarCliente(Integer Cedula) {
+        MCliente MClienteTemp = null;
+
+        for (MCliente MCliente : controladorClientes) {
+            if (MCliente.getCedula().equals(Cedula)) {
+                MClienteTemp = MCliente;
+                break;
+            }
+        }
+
+        return MClienteTemp;
+    }
+
+    public int SaberEstado(String Estado) {
+        int temp = 0;
+        switch (Estado) {
+            case "Pendiente" -> {
+                return 1;
+            }
+            case "En ejecucion" -> {
+                return 2;
+            }
+            case "Finalizada" -> {
+                return 3;
+            }
+            case "Cancelada" -> {
+                return 4;
+            }
+        };
+
+        return temp;
+    }
+
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
 
-        //        this.controlador.setObjecto(null);
-
+        this.controlador.setObjecto(null);
         this.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
@@ -215,29 +365,39 @@ public class FrmReservacionesBuscar extends javax.swing.JDialog {
 
     private void txtFiltroKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFiltroKeyReleased
         // TODO add your handling code here:
-        //        String filtro = this.txtFiltro.getText().trim();
-        //        System.out.println(filtro);
-        //
-        //        if (!filtro.isEmpty()) {
-            //
-            //            System.out.println("%" + this.txtFiltro.getText() + "%");
-            //            controlador.Leer(this.txtFiltro.getText());
-            //
-            //            try {
-                //                DefaultTableModel table = (DefaultTableModel) this.tbListaHab.getModel();
-                //                table.setRowCount(0);
-                //                Integer Numero = controlador.getObjecto().getNumero();
-                //                String Tipo = SaberTipo(controlador.getObjecto().getTipo());
-                //                String Estado = SaberEstado(controlador.getObjecto().isEstado());
-                //                Double Precio = controlador.getObjecto().getPrecio();
-                //                table.addRow(new Object[]{Numero, Tipo, Estado, Precio});
-                //                this.tbListaHab.setModel(table);
-                //            } catch (Exception e) {
-                //            }
-            //
-            //        }else{
-            //            this.showData();
-            //        }
+        String filtro = this.txtFiltro.getText().trim();
+        System.out.println(filtro);
+
+        if (!filtro.isEmpty()) {
+
+            System.out.println("%" + this.txtFiltro.getText() + "%");
+            controlador.Leer(this.txtFiltro.getText());
+
+            try {
+                DefaultTableModel table = (DefaultTableModel) this.tbListaHab.getModel();
+                table.setRowCount(0);
+
+                Integer NumeroReserva = this.controlador.getObjecto().getNumeroReserva();
+                Integer Cliente = this.controlador.getObjecto().getCliente().getCedula();
+                Integer Habitacion = this.controlador.getObjecto().getHabitacion().getNumero();
+                String FechaEntrada = String.valueOf(this.controlador.getObjecto().getFechaEntrada());
+                String FechaSalida = String.valueOf(this.controlador.getObjecto().getFechaSalida());
+
+                String Estado = SaberEstado(this.controlador.getObjecto().getEstado()); //1-, 2-, 3-, 4-
+                Integer Estadia = this.controlador.getObjecto().getEstadia();
+                Double Subtotal = this.controlador.getObjecto().getSubtotal();
+                Double Impuestos = this.controlador.getObjecto().getImpuestos();
+                Double Total = this.controlador.getObjecto().getTotal();
+
+                table.addRow(new Object[]{NumeroReserva, Cliente, Habitacion, FechaEntrada, FechaSalida, Estado, Estadia, Subtotal, Impuestos, Total});
+                this.tbListaHab.setModel(table);
+            } catch (Exception e) {
+
+            }
+
+        } else {
+            this.showData();
+        }
     }//GEN-LAST:event_txtFiltroKeyReleased
 
     private void txtFiltroKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFiltroKeyTyped
@@ -246,11 +406,20 @@ public class FrmReservacionesBuscar extends javax.swing.JDialog {
         //        System.out.println(filtro);
         //
         //        if(!filtro.isEmpty()){
-            //
-            //            System.out.println("%"+this.txtFiltro.getText()+"%");
-            //            controlador.Leer(this.txtFiltro.getText());
-            //        }
+        //
+        //            System.out.println("%"+this.txtFiltro.getText()+"%");
+        //            controlador.Leer(this.txtFiltro.getText());
+        //        }
     }//GEN-LAST:event_txtFiltroKeyTyped
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        // TODO add your handling code here:
+        showData();
+    }//GEN-LAST:event_formWindowOpened
+
+    private void txtFiltroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFiltroActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtFiltroActionPerformed
 
     /**
      * @param args the command line arguments
@@ -305,4 +474,9 @@ public class FrmReservacionesBuscar extends javax.swing.JDialog {
     private javax.swing.JTable tbListaHab;
     private javax.swing.JTextField txtFiltro;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void showMessage(String msg, int messageType) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

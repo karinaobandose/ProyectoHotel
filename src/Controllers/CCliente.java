@@ -106,8 +106,21 @@ public class CCliente implements Controlador<MCliente> {
 
     @Override
     public void Eliminar(MCliente objecto) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+        int NumeroTemp = objecto.getCedula();
+        MCliente MClienteTemp = null;
+        for (MCliente MCliente : Lista) {
+            if (MCliente.getCedula().equals(NumeroTemp)) {
+                MClienteTemp = MCliente;
+                break;
+            }
+        }
+        if (MClienteTemp == null) {
+            System.out.println("Null");
+            throw new Exception("El dato no se puede eliminar");
+
+        }
+
+        this.getLista().remove(MClienteTemp);     }
 
     @Override
     public String toString() {

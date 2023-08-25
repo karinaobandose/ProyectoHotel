@@ -4,17 +4,58 @@
  */
 package Views;
 
+import Views.Clientes.FrmClientes;
+import Views.Empleado.FrmEmpleados;
+import Views.Habitacion.FrmHabitaciones;
+import Views.Reservaciones.FrmReservas;
+import Views.Servicios.FrmServicios;
+
 /**
  *
  * @author emalo
  */
 public class FrmMenu extends javax.swing.JFrame {
 
+    FrmClientes FrmCliente;
+    FrmReservas FrmReservas;
+    FrmServicios FrmServicios;
+    FrmHabitaciones FrmHabitaciones;
+    FrmEmpleados FrmEmpleados;
+
     /**
      * Creates new form Menu
      */
     public FrmMenu() {
         initComponents();
+        FrmCliente = new FrmClientes();
+
+        FrmServicios = new FrmServicios();
+        FrmHabitaciones = new FrmHabitaciones();
+        FrmEmpleados = new FrmEmpleados();
+
+        FrmReservas = new FrmReservas();
+
+        Accion();
+        
+        this.setLocationRelativeTo(null);
+    }
+
+    public void Accion() {
+        FrmReservas.btnRegistrarCliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                FrmReservas.Limpiar();
+                FrmReservas.setVisible(false);
+                FrmCliente.setVisible(true);
+            }
+        });
+    }
+
+    public void CerrarVentanas() {
+        this.FrmCliente.setVisible(false);
+        this.FrmReservas.setVisible(false);
+        this.FrmEmpleados.setVisible(false);
+        this.FrmHabitaciones.setVisible(false);
+        this.FrmServicios.setVisible(false);
     }
 
     /**
@@ -42,12 +83,32 @@ public class FrmMenu extends javax.swing.JFrame {
         });
 
         jButton1.setText("Clientes");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("Servicios");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setText("Empleados");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jButton4.setText("Reservas");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -84,7 +145,40 @@ public class FrmMenu extends javax.swing.JFrame {
 
     private void BtAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtAddActionPerformed
         // TODO add your handling code here:
+        CerrarVentanas();
+        this.FrmHabitaciones.setVisible(true);
     }//GEN-LAST:event_BtAddActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        CerrarVentanas();
+        this.FrmCliente.setVisible(true);
+        this.FrmCliente.setControladorReservas(this.FrmReservas.getControlador().getLista());
+
+
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        CerrarVentanas();
+        this.FrmReservas.setVisible(true);
+
+        this.FrmReservas.setControladorClientes(this.FrmCliente.getControlador().getLista());
+        this.FrmReservas.setControladorHabitaciones(this.FrmHabitaciones.getControlador().getLista());
+
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        CerrarVentanas();
+        this.FrmEmpleados.setVisible(true);
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        CerrarVentanas();
+        this.FrmServicios.setVisible(true);
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments

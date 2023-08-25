@@ -9,7 +9,9 @@ import Controllers.Controlador;
 import Models.MEmpleado;
 import Models.Utils;
 import Views.Vista;
+import static Views.Vista.Correcto;
 import java.awt.event.KeyEvent;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -19,6 +21,11 @@ public class FrmEmpleados extends javax.swing.JFrame implements Vista {
 
     private Utils utiles;
     private Controlador<MEmpleado> controlador;
+
+    @Override
+    public Controlador<MEmpleado> getControlador() {
+        return controlador;
+    }
 
     @Override
     public void setControlador(Controlador controlador) {
@@ -130,6 +137,7 @@ public class FrmEmpleados extends javax.swing.JFrame implements Vista {
     private void initComponents() {
 
         jPanel3 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         TxtSalario = new javax.swing.JTextField();
         TxtTelefono = new javax.swing.JTextField();
@@ -153,19 +161,32 @@ public class FrmEmpleados extends javax.swing.JFrame implements Vista {
         btnEliminar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 204));
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        jLabel1.setText("Registro Empleados");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(143, 143, 143))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 47, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 204));
@@ -426,16 +447,24 @@ public class FrmEmpleados extends javax.swing.JFrame implements Vista {
                 if (this.btnEliminar.isEnabled()) {
 
                     this.controlador.Actualizar(Temp);
+                    JOptionPane.showMessageDialog(null, "\"Actualizado\"", "Info", Correcto);
+                    this.Limpiar();
                 } else {
                     if (this.controlador.Buscar(Temp.getCedula()) == null) {
 
                         this.controlador.Crear(Temp);
                         System.out.println(this.controlador.getLista());
+                        JOptionPane.showMessageDialog(null, "\"Agregado\"", "Info", Correcto);
+                        this.Limpiar();
                     } else {
+                        JOptionPane.showMessageDialog(null, "\"No agregado\"", "error", Error);
+
                         System.out.println("Ya existe");
                     }
                 }
             } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "\"No Actualizado\"", "Error", Error);
+
                 System.out.println(e);
             }
 
@@ -465,6 +494,8 @@ public class FrmEmpleados extends javax.swing.JFrame implements Vista {
         try {
             showData();
         } catch (Exception e) {
+//            JOptionPane.showMessageDialog(null, "\"No encontrado\"", "Error", Error);
+
             System.out.println("error 2");
         }
     }//GEN-LAST:event_btnBuscarActionPerformed
@@ -474,7 +505,11 @@ public class FrmEmpleados extends javax.swing.JFrame implements Vista {
         MEmpleado Temp = CrearEmpleado();
         try {
             this.controlador.Eliminar(Temp);
+            JOptionPane.showMessageDialog(null, "\"Eliminado\"", "Info", Correcto);
+            this.Limpiar();
         } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "\"No eliminado\"", "error", Error);
+
             System.out.println(ex.getMessage());
         }
     }//GEN-LAST:event_btnEliminarActionPerformed
@@ -541,6 +576,11 @@ public class FrmEmpleados extends javax.swing.JFrame implements Vista {
             evt.consume(); // Consume el evento si no es un dígito válido
         }
     }//GEN-LAST:event_TxtCedulaKeyTyped
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        // TODO add your handling code here:
+        this.Limpiar();
+    }//GEN-LAST:event_formWindowOpened
 
     public void DescarmarChecks() {
         this.CkConserje.setSelected(false);
@@ -609,6 +649,7 @@ public class FrmEmpleados extends javax.swing.JFrame implements Vista {
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnNuevo;
     private javax.swing.JButton btnSalir;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

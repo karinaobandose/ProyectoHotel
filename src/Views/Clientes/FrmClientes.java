@@ -5,12 +5,17 @@
 package Views.Clientes;
 
 import Controllers.CCliente;
+import Controllers.CReserva;
 import Controllers.Controlador;
 import Models.MCliente;
+import Models.MReservas;
 import Models.Utils;
 import Views.Vista;
+import static Views.Vista.Correcto;
 import java.awt.event.KeyEvent;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -19,7 +24,16 @@ import java.time.LocalDate;
 public class FrmClientes extends javax.swing.JFrame implements Vista {
 
     private Controlador<MCliente> controlador;
+    private ArrayList<MReservas> ControladorReservas = new ArrayList<>();
     private Utils utiles;
+
+    public ArrayList<MReservas> getControladorReservas() {
+        return ControladorReservas;
+    }
+
+    public void setControladorReservas(ArrayList<MReservas> ControladorReservas) {
+        this.ControladorReservas = ControladorReservas;
+    }
 
     /**
      * Creates new form Clientes
@@ -31,6 +45,11 @@ public class FrmClientes extends javax.swing.JFrame implements Vista {
         System.out.println("Contralador");
         this.controlador = (CCliente) controlador;
         System.out.println(this.controlador.getLista());
+    }
+
+    @Override
+    public Controlador<MCliente> getControlador() {
+        return controlador;
     }
 
     public FrmClientes() {
@@ -69,8 +88,14 @@ public class FrmClientes extends javax.swing.JFrame implements Vista {
         TxtTelefono = new javax.swing.JFormattedTextField();
         TxtFecha = new javax.swing.JFormattedTextField();
         jPanel3 = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 204));
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -290,15 +315,23 @@ public class FrmClientes extends javax.swing.JFrame implements Vista {
         jPanel3.setBackground(new java.awt.Color(255, 255, 204));
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
+        jLabel4.setText("Registro Clientes");
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 618, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(199, 199, 199))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 47, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -337,16 +370,25 @@ public class FrmClientes extends javax.swing.JFrame implements Vista {
                     if (this.btnEliminar.isEnabled()) {
 
                         this.controlador.Actualizar(Temp);
+                        JOptionPane.showMessageDialog(null, "\"Actualizado\"", "Info", Correcto);
+                        this.Limpiar();
                     } else {
                         if (this.controlador.Buscar(Temp.getCedula()) == null) {
 
                             this.controlador.Crear(Temp);
                             System.out.println(this.controlador.getLista());
+                            JOptionPane.showMessageDialog(null, "\"Agregado\"", "Info", Correcto);
+
+                            this.Limpiar();
                         } else {
+                            JOptionPane.showMessageDialog(null, "\"No agregado\"", "Error", Error);
+
                             System.out.println("Ya existe");
                         }
                     }
                 } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, "\"No Actualizado\"", "Error", Error);
+
                     System.out.println(e);
                 }
             }
@@ -400,18 +442,18 @@ public class FrmClientes extends javax.swing.JFrame implements Vista {
         Limpiar();
     }//GEN-LAST:event_btnNuevoActionPerformed
 
-    public void Limpiar(){
+    public void Limpiar() {
         this.btnEliminar.setEnabled(false);
         this.TxtCedula.setEditable(true);
         this.TxtFecha.setEditable(true);
-        
+
         this.TxtCedula.setText("");
         this.TxtNombre.setText("");
         this.TxtFecha.setText("");
         this.TxtTelefono.setText("");
         this.TxtCorreo.setText("");
     }
-    
+
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
         this.dispose();
     }//GEN-LAST:event_btnSalirActionPerformed
@@ -431,6 +473,8 @@ public class FrmClientes extends javax.swing.JFrame implements Vista {
         try {
             showData();
         } catch (Exception e) {
+//            JOptionPane.showMessageDialog(null, "\"No encontrado\"", "Error", Error);
+
             System.out.println("error 2");
         }
 
@@ -447,12 +491,38 @@ public class FrmClientes extends javax.swing.JFrame implements Vista {
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
         // TODO add your handling code here:
-//        MHabitacion Temp = CrearHabitacion();
-//        try {
-//            this.controlador.Eliminar(Temp);
-//        } catch (Exception ex) {
-//            System.out.println(ex.getMessage());
-//        }
+        MCliente Temp = CrearCliente();
+        boolean TTemp = false;
+
+        try {
+            if (ControladorReservas.isEmpty()) {
+                this.controlador.Eliminar(Temp);
+                    JOptionPane.showMessageDialog(null, "\"Eliminado\"", "Info", Correcto);
+                    this.Limpiar();
+            }else{
+                for (MReservas ControladorReserva : ControladorReservas) {
+                System.out.println(ControladorReserva.getCliente().getCedula());
+                System.out.println(ControladorReserva.getCliente().getCedula());
+                System.out.println(ControladorReserva.getCliente().getCedula());
+                System.out.println(ControladorReserva.getCliente().getCedula());
+                System.out.println(ControladorReserva.getCliente().getCedula());
+                if (!ControladorReserva.getCliente().getCedula().equals(Temp.getCedula())) {
+                    this.controlador.Eliminar(Temp);
+                    JOptionPane.showMessageDialog(null, "\"Eliminado\"", "Info", Correcto);
+                    this.Limpiar();
+                    break;
+                }
+            }
+                JOptionPane.showMessageDialog(null, "\"No eliminado\"", "error", Error);
+                this.Limpiar();
+            
+            }
+            
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "\"No eliminado\"", "Error", Error);
+
+            System.out.println(ex.getMessage());
+        }
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void TxtCedulaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TxtCedulaActionPerformed
@@ -492,41 +562,46 @@ public class FrmClientes extends javax.swing.JFrame implements Vista {
         }
     }//GEN-LAST:event_TxtFechaKeyReleased
 
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        // TODO add your handling code here:
+        this.Limpiar();
+    }//GEN-LAST:event_formWindowOpened
+
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FrmClientes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FrmClientes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FrmClientes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FrmClientes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new FrmClientes().setVisible(true);
-            }
-        });
-    }
+//    public static void main(String args[]) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(FrmClientes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(FrmClientes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(FrmClientes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(FrmClientes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//        //</editor-fold>
+//
+//        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new FrmClientes().setVisible(true);
+//            }
+//        });
+//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel LbEdad;
@@ -545,6 +620,7 @@ public class FrmClientes extends javax.swing.JFrame implements Vista {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;

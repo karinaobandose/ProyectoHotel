@@ -24,6 +24,19 @@ public class MReservas {
     private Double Impuestos;
     private Double Total;
 
+    public MReservas(Integer NumeroReserva, MCliente Cliente, MHabitacion Habitacion, LocalDate FechaEntrada, LocalDate FechaSalida, Integer Estado, Integer Estadia, Double Subtotal, Double Impuestos, Double Total) {
+        this.NumeroReserva = NumeroReserva;
+        this.Cliente = Cliente;
+        this.Habitacion = Habitacion;
+        this.FechaEntrada = FechaEntrada;
+        this.FechaSalida = FechaSalida;
+        this.Estado = Estado;
+        this.Estadia = Estadia;
+        this.Subtotal = Subtotal;
+        this.Impuestos = Impuestos;
+        this.Total = Total;
+    }
+   
     public MReservas(Integer NumeroReserva, MCliente Cliente, MHabitacion Habitacion, LocalDate FechaEntrada, LocalDate FechaSalida) {
         this.NumeroReserva = NumeroReserva;
         this.Cliente = Cliente;

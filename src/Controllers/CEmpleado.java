@@ -47,7 +47,8 @@ public class CEmpleado implements Controlador<MEmpleado>{
             }
         }
 
-        return temp;    }
+        return temp;   
+    }
 
     @Override
     public void Leer(MEmpleado objecto) {
@@ -117,6 +118,7 @@ public class CEmpleado implements Controlador<MEmpleado>{
 
         }
 
-        this.getLista().remove(MEmpleadoTemp);    }
+        this.getLista().remove(MEmpleadoTemp);    
+    }
     
 }
