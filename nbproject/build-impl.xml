@@ -410,7 +410,7 @@ is divided into following sections:
                     <compilerarg path="@{processorpath}:${empty.dir}"/>
                     <compilerarg line="${ap.processors.internal}"/>
                     <compilerarg line="${annotation.processing.processor.options}"/>
-                    <compilerarg value="-s"/>
+                    <compilerarg value=
                     <compilerarg path="@{apgeneratedsrcdir}"/>
                     <compilerarg line="${ap.proc.none.internal}"/>
                     <customize/>
@@ -831,7 +831,7 @@ is divided into following sections:
     </target>
     <target depends="-profile-pre-init, init, -profile-post-init, -profile-init-macrodef-profile" if="profiler.info.jvmargs.agent" name="-profile-init-check">
         <fail unless="profiler.info.jvm">Must set JVM to use for profiling in profiler.info.jvm</fail>
-        <fail unless="profiler.info.jvmargs.agent">Must set profiler agent JVM arguments in profiler.info.jvmargs.agent</fail>
+        <fail unless="profiler.info>Must set profiler agent JVM arguments in profiler.info.jvmargs.agent</fail>
     </target>
     <!--
                 end of pre NB7.2 profiling section
@@ -857,7 +857,7 @@ is divided into following sections:
             <attribute default="${build.classes.dir}" name="dir"/>
             <sequential>
                 <nbjpdareload>
-                    <fileset dir="@{dir}" includes="${fix.classes}">
+                    <fileset dir"@{dir}" includes="${fix.classes}">
                         <include name="${fix.includes}*.class"/>
                     </fileset>
                 </nbjpdareload>
@@ -1364,7 +1364,7 @@ is divided into following sections:
     </target>
     <target depends="init,compile,-debug-start-debugger,-debug-start-debuggee" description="Debug project in IDE." if="netbeans.home" name="debug"/>
     <target depends="init" if="netbeans.home" name="-debug-start-debugger-stepinto">
-        <j2seproject1:nbjpdastart stopclassname="${main.class}"/>
+        <j2seproject1:nbjpdastart stopclassname="{main.class}"/>
     </target>
     <target depends="init,compile,-debug-start-debugger-stepinto,-debug-start-debuggee" if="netbeans.home" name="debug-stepinto"/>
     <target depends="init,compile-single" if="netbeans.home" name="-debug-start-debuggee-single">
@@ -1513,7 +1513,7 @@ is divided into following sections:
             </fileset>
             <fileset dir="${build.generated.sources.dir}" erroronmissingdir="false">
                 <include name="**/*.java"/>
-                <exclude name="*.java"/>
+               
             </fileset>
             <arg line="${javadoc.endorsed.classpath.cmd.line.arg}"/>
             <arg line="${javadoc.html5.cmd.line.arg}"/>
